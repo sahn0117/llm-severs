@@ -1,0 +1,13 @@
+{
+  "city": "花蓮",
+  "current_weather": {
+    "success": true,
+    "data": {
+      "station_name": "花蓮",
+      "city": null,
+      "temperature": 27.2,
+      "humidity": 87,
+      "description": "N/A"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "city": "台南",
+  "current_weather": {
+    "success": false,
+    "error": "找不到縣市名為 '台南' 的任何觀測站"
+  }
+}

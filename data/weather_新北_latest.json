@@ -1,0 +1,13 @@
+{
+  "city": "新北",
+  "current_weather": {
+    "success": true,
+    "data": {
+      "station_name": "新北",
+      "city": null,
+      "temperature": 25.9,
+      "humidity": 90,
+      "description": "N/A"
+    }
+  }
+}

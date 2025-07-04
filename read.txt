@@ -1,0 +1,176 @@
+# LLM 智能助手服務 - 專案啟動與測試指南
+
+## 1. 專案概述
+
+本專案旨在建立一個功能完整的 LLM 智能助手服務。它具備以下核心能力：
+*   **本地 LLM 運行**：使用 Ollama 在本地運行大型語言模型。
+*   **RAG 檢索增強生成 (Retrieval-Augmented Generation)**：結合外部知識庫提供更準確的回答。
+*   **雙知識庫系統**：
+    *   **靜態知識庫 (static_db)**：存放不常變動的文檔資料 (e.g., .txt, .pdf, .docx, .json)。
+    *   **動態知識庫 (dynamic_db)**：專用於存放自動更新的即時天氣資料 (只索引 `weather_for_llm.txt` 總結檔)。
+*   **台灣天氣資料整合**：自動抓取中央氣象署的精準天氣數據，並格式化後納入動態知識庫。
+*   **多媒體處理**：支援語音轉文字 (Speech-to-Text) 和光學字元識別 (OCR)。
+*   **模組化設計**：後端服務、RAG 系統、多媒體處理、天氣服務等功能相互獨立，便於維護和擴展。
+
+## 2. 檔案說明與功能概覽
+
+目前本專案的核心檔案位於 `C:\llm_service\` 下，主要分為 `backend` 和 `rag_system\scripts` 兩大部分。
+
+### 2.1 `backend\` 目錄
+
+*   **`app.py` (Flask 主應用服務)**  (開了就等於開啟llm服務，可以用test_api測試是否正常)
+    *   **功能**：整個後端服務的入口點，提供各種 RESTful API 接口。
+    *   **關鍵職責**：
+        *   初始化所有核心服務 (LLM, RAG, 多媒體, 天氣)。
+        *   管理對話歷史 (連接 SQLite 資料庫)。
+        *   **核心 `/api/chat` 接口**：接收用戶訊息（含文字、語音、圖片），智慧判斷查詢意圖（天氣/靜態知識），然後調用 `llm_service` 執行 RAG 查詢並生成回應。
+        *   提供各種輔助 API (e.g., `/api/status`, `/api/conversations`, `/api/weather/*`, `/api/multimedia/*`)。
+
+*   **`llm_service.py` (LLM 核心邏輯)** (可以不用管)
+    *   **功能**：負責與本地 Ollama LLM 互動，並整合 RAG 檢索到的上下文。
+    *   **關鍵職責**：
+        *   連接 Ollama 服務。
+        *   提供 `generate_response()` 方法，該方法會根據 `app.py` 傳入的參數 (`use_rag_static`, `use_rag_dynamic`)，指示 `rag_service` 查詢特定知識庫。
+        *   將 RAG 檢索到的上下文組合成 LLM 的 Prompt。
+        *   對 LLM 回應進行後處理（例如統一「臺」為「台」）。
+
+*   **`multimedia_service.py` (多媒體處理整合服務)**  (不用管)
+    *   **功能**：整合語音轉文字和 OCR 功能。
+    *   **關鍵職責**：
+        *   初始化 `SpeechToTextService` 和 `OCRService`。
+        *   提供 `process_audio()` 和 `process_image()` 方法，將音頻或圖片內容轉換為文字。
+        *   提供服務狀態查詢接口。
+
+*   **`weather_service.py` (台灣氣象資料服務)**   (去抓氣象資料的，目前有問題需要修正)
+    *   **功能**：從中央氣象署 API 獲取最新的台灣天氣資料，並進行精準處理。
+    *   **關鍵職責**：
+        *   從 `O-A0001-001` (一般天氣觀測報告) API 獲取所有觀測站的原始數據。
+        *   **`get_weather_summary()`**：篩選出指定主要城市的資料，並將其格式化，用於生成 `weather_for_llm.txt`。
+        *   **`_make_request()`**：處理與氣象署 API 的通信。
+        *   **數據來源**：只依賴 `O-A0001-001` API，並使用程式碼中定義的精確觀測站名稱來匹配數據。
+
+*   **`weather_scheduler.py` (氣象資料自動更新排程器)**  (去抓氣象資料的，目前有問題需要修正)
+    *   **功能**：定期從 `weather_service` 獲取最新天氣摘要，並生成 `data` 目錄下的 `weather_for_llm.txt` 檔案。
+    *   **關鍵職責**：
+        *   呼叫 `weather_service.get_weather_summary()` 來獲取最新的天氣摘要。
+        *   將摘要內容格式化後，儲存為 `C:\llm_service\data\weather_for_llm.txt`。
+        *   **不會**觸發 RAG 資料庫的重建，RAG 資料庫的重建由 `build_dbs.py` 獨立負責。
+
+### 2.2 `rag_system\scripts\` 目錄
+
+*   **`build_dbs.py` (RAG 知識庫重建腳本)**  (會把向量庫的東西都刪掉)
+    *   **功能**：獨立運行，用於清空舊的向量資料庫，並從指定來源目錄中載入所有文檔，重建新的向量索引。
+    *   **關鍵職責**：
+        *   **銷毀** `C:\llm_service\rag_system\embeddings` 目錄。
+        *   從 `C:\llm_service\rag_system\documents` 載入所有靜態文件，並建立索引到 `static_db`。
+        *   從 `C:\llm_service\data` **只載入 `weather_for_llm.txt`**，並建立索引到 `dynamic_db`。
+        *   **重要**：RAG 系統的**所有知識都來源於此腳本建立的索引**。
+
+*   **`document_loader.py` (文檔載入器)** (不用管)
+    *   **功能**：負責讀取各種格式的文檔 (e.g., .txt, .pdf, .docx, .json)，並將其轉換為標準的文本片段。
+    *   **關鍵職責**：
+        *   支援多種文件格式，包括 JSON (會將 JSON 結構轉換為易讀文本)。
+        *   支持按文件模式 (`file_pattern`) 載入文件 (e.g., 只載入 `*_for_llm.txt`)。
+
+*   **`vector_store.py` (向量資料庫管理器)**  (不用管)
+    *   **功能**：底層管理 ChromaDB 向量資料庫，處理文檔的嵌入 (embedding) 和相似性搜尋。
+    *   **關鍵職責**：
+        *   初始化 `HuggingFaceEmbeddings` 模型。
+        *   管理多個獨立的 ChromaDB 實例 (通過 `persist_directory` 和 `collection_name`)。
+        *   提供 `add_documents()` (分批添加) 和 `get_relevant_context()` (檢索上下文) 等方法。
+
+*   **`rag_service.py` (RAG 服務)**  
+    *   **功能**：整合 `document_loader` 和 `vector_store`，提供高層次的 RAG 查詢接口。
+    *   **關鍵職責**：
+        *   初始化**兩個** `VectorStoreManager` 實例：一個用於 `static_db`，一個用於 `dynamic_db`。
+        *   提供 `query()` 方法，根據 `use_static` 和 `use_dynamic` 參數，決定從哪個（或哪些）知識庫進行檢索。
+        *   **不包含**資料庫的重建或管理功能，只負責查詢。
+
+## 4. 系統啟動與測試流程
+
+### 4.1 啟動前檢查清單
+
+1.  **Python 環境**：確保您已建立並啟用虛擬環境，並安裝了 `requirements.txt` 中的所有依賴。
+2.  **Ollama 服務**：確保 Ollama 已安裝，並在後台運行 `llama3.1:8b` (或您選擇的模型)。您可以在 CMD 中運行 `ollama serve`。
+3.  **Tesseract OCR**：確保 Tesseract 已安裝，並已添加到系統 PATH。
+4.  **CWA_API_KEY**：在 `C:\llm_service\.env` 文件中，確認已設定 `CWA_API_KEY=您的金鑰`。
+
+### 4.2 核心啟動步驟 (重要：按順序執行)
+
+1.  **[一次性] 生成初始天氣資料**：   (會讓程式碼自動間格時間去抓回氣象資料)
+    *   **目的**：讓 `data` 目錄下有 `weather_for_llm.txt` 檔案，以便 RAG 系統能索引。
+    *   **操作**：開啟 CMD，啟用虛擬環境，執行：
+        ```bash
+        cd C:\llm_service\backend
+        python weather_scheduler.py update
+        ```
+    *   **驗證**：檢查 `C:\llm_service\data\` 目錄，確認 `weather_for_llm.txt` 檔案已生成，且內容是多個城市的不同數據。
+
+2.  **[一次性] 重建 RAG 知識庫**：    
+    *   **目的**：清空舊索引，並從 `documents` 和 `data` 目錄重建 `static_db` 和 `dynamic_db`。
+    *   **操作**：
+        *   **手動刪除** `C:\llm_service\rag_system\embeddings` 目錄 (防止舊檔案鎖定)。
+        *   開啟 CMD，啟用虛擬環境，執行：
+            ```bash
+            cd C:\llm_service\rag_system\scripts
+            python build_dbs.py
+            ```
+    *   **驗證**：檢查日誌，確認 `static_db` 和 `dynamic_db` 的 `total_documents` 數量大於 0。
+
+3.  **[持續運行] 啟動 Flask 後端服務**：
+    *   **目的**：提供所有 API 接口，處理前端請求。
+    *   **操作**：開啟 CMD，啟用虛擬環境，執行：
+        ```bash
+        cd C:\llm_service\backend
+        python app.py
+        ```
+    *   **驗證**：日誌顯示服務啟動，監聽在 `http://0.0.0.0:5000`。
+
+4.  **[持續運行] 啟動天氣排程器 (可選，用於自動更新)**：
+    *   **目的**：讓 `weather_for_llm.txt` 定期更新，以保持動態知識庫的時效性。
+    *   **操作**：開啟**另一個** CMD，啟用虛擬環境，執行：
+        ```bash
+        cd C:\llm_service\backend
+        python weather_scheduler.py
+        ```
+    *   **驗證**：排程器日誌顯示成功生成摘要。
+
+### 4.3 測試流程
+
+在所有服務啟動後，使用 `test_api.py` 進行功能測試。
+
+1.  **開啟 CMD**，啟用虛擬環境，執行：
+    ```bash
+    cd C:\llm_service\backend
+    python test_api.py
+    ```
+
+2.  **預期測試結果**：
+    *   **`[TEST] 靜態 RAG 知識庫查詢`**：`[OK]`，LLM 回答關於機器學習等靜態知識。
+    *   **`[TEST] 動態天氣知識庫查詢`**：`[OK]`，LLM 能夠**精準**回答台北的氣壓和濕度。
+    *   **`[TEST] 雙知識庫聯合查詢`**：`[OK]`，LLM 能夠**結合靜態知識和天氣資訊**進行判斷。
+    *   **所有其他 API 端點**：如 `/api/status`, `/api/conversations` 等都應 `[OK]`。
+
+## 5. 功能總結
+
+### 5.1 核心 AI 功能
+*   **本地 LLM 服務**：基於 Ollama 運行。
+*   **RAG 檢索增強生成**：結合外部知識庫，提供更準確、有依據的回答。
+*   **雙知識庫管理**：
+    *   **靜態知識庫**：用於長期、穩定知識的問答。
+    *   **動態知識庫**：用於即時、變動性高的資訊問答（如天氣）。
+*   **台灣天氣資料整合**：
+    *   自動抓取中央氣象署的**真實觀測站數據**。
+    *   **精準過濾**每個城市的數據，並整合成一份乾淨的「全台灣天氣摘要」(`weather_for_llm.txt`)。
+    *   RAG 系統**只索引**這份總結檔案，避免數據混淆。
+*   **多媒體處理**：支援語音轉文字和 OCR 圖片文字識別。
+
+### 5.2 系統與流程
+*   **模組化設計**：各組件職責清晰，便於維護。
+*   **自動化資料更新**：天氣排程器自動抓取最新數據並更新動態知識庫。
+*   **可靠的重建機制**：`build_dbs.py` 腳本能夠可靠地重建向量資料庫。
+*   **API 接口完善**：提供多種 RESTful API 供前端或其他應用調用。
+
+---
+
+**希望這份詳細的 `README.md` 能幫助您清晰地理解並成功啟動整個專案！**

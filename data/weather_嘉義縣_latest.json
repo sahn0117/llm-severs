@@ -1,0 +1,7 @@
+{
+  "city": "嘉義縣",
+  "current_weather": {
+    "success": false,
+    "error": "找不到縣市名為 '嘉義縣' 的任何觀測站"
+  }
+}

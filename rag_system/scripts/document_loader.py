@@ -1,165 +1,86 @@
+# C:\llm_service\rag_system\scripts\document_loader.py
+# 版本: v2.4 - 修正了 text_splitter 參數
+
 import os
 import logging
+import json
+from typing import List
 from pathlib import Path
-from typing import List, Dict, Any
-import jieba
-import re
 
-# LangChain imports
+from langchain_community.document_loaders import PyPDFLoader, TextLoader, UnstructuredWordDocumentLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
-from langchain_community.document_loaders import (
-    TextLoader, 
-    PyPDFLoader, 
-    Docx2txtLoader,
-    UnstructuredExcelLoader,
-    UnstructuredPowerPointLoader
-)
 
-class DocumentProcessor:
-    def __init__(self, chunk_size: int = 1000, chunk_overlap: int = 200):
-        self.chunk_size = chunk_size
-        self.chunk_overlap = chunk_overlap
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+class DocumentLoader:
+    def __init__(self, documents_dir: str):
+        self.documents_dir = Path(documents_dir)
+        self.supported_extensions = {'.pdf': self._load_pdf, '.txt': self._load_text, '.docx': self._load_docx, '.json': self._load_json}
         
-        # 設定中文文本分割器
+        # [核心修正] 使用正確的參數名稱 chunk_overlap
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=chunk_size,
-            chunk_overlap=chunk_overlap,
-            length_function=len,
-            separators=["\n\n", "\n", "。", "！", "？", "；", "，", " ", ""]
+            chunk_size=1000, 
+            chunk_overlap=200 # <-- 正確的參數名
         )
-        
-        # 設定日誌
-        logging.basicConfig(level=logging.INFO)
-        self.logger = logging.getLogger(__name__)
-    
-    def load_single_document(self, file_path: str) -> List[Document]:
-        """載入單個文檔"""
-        file_path = Path(file_path)
-        
-        if not file_path.exists():
-            self.logger.error(f"檔案不存在: {file_path}")
-            return []
-        
-        try:
-            # 根據檔案類型選擇載入器
-            if file_path.suffix.lower() == '.txt':
-                loader = TextLoader(str(file_path), encoding='utf-8')
-            elif file_path.suffix.lower() == '.pdf':
-                loader = PyPDFLoader(str(file_path))
-            elif file_path.suffix.lower() in ['.docx', '.doc']:
-                loader = Docx2txtLoader(str(file_path))
-            elif file_path.suffix.lower() in ['.xlsx', '.xls']:
-                loader = UnstructuredExcelLoader(str(file_path))
-            elif file_path.suffix.lower() in ['.pptx', '.ppt']:
-                loader = UnstructuredPowerPointLoader(str(file_path))
-            else:
-                self.logger.warning(f"不支援的檔案格式: {file_path.suffix}")
-                return []
-            
-            # 載入文檔
-            documents = loader.load()
-            
-            # 添加元數據
-            for doc in documents:
-                doc.metadata.update({
-                    'source': str(file_path),
-                    'filename': file_path.name,
-                    'file_type': file_path.suffix.lower()
-                })
-            
-            self.logger.info(f"成功載入文檔: {file_path.name}")
-            return documents
-            
-        except Exception as e:
-            self.logger.error(f"載入文檔失敗 {file_path}: {str(e)}")
-            return []
-    
-    def load_directory(self, directory_path: str) -> List[Document]:
-        """載入目錄中的所有文檔"""
-        directory = Path(directory_path)
-        
-        if not directory.exists():
-            self.logger.error(f"目錄不存在: {directory}")
-            return []
-        
-        all_documents = []
-        supported_extensions = {'.txt', '.pdf', '.docx', '.doc', '.xlsx', '.xls', '.pptx', '.ppt'}
-        
-        for file_path in directory.rglob('*'):
-            if file_path.is_file() and file_path.suffix.lower() in supported_extensions:
-                documents = self.load_single_document(str(file_path))
-                all_documents.extend(documents)
-        
-        self.logger.info(f"從目錄 {directory} 載入了 {len(all_documents)} 個文檔片段")
-        return all_documents
-    
-    def split_documents(self, documents: List[Document]) -> List[Document]:
-        """分割文檔為小塊"""
-        if not documents:
-            return []
-        
-        # 預處理中文文本
-        processed_docs = []
-        for doc in documents:
-            # 清理文本
-            cleaned_content = self.clean_text(doc.page_content)
-            
-            if cleaned_content.strip():
-                doc.page_content = cleaned_content
-                processed_docs.append(doc)
-        
-        # 分割文檔
-        split_docs = self.text_splitter.split_documents(processed_docs)
-        
-        self.logger.info(f"文檔分割完成，共 {len(split_docs)} 個片段")
-        return split_docs
-    
-    def clean_text(self, text: str) -> str:
-        """清理文本"""
-        # 移除多餘的空白字符
-        text = re.sub(r'\s+', ' ', text)
-        
-        # 移除特殊字符（保留中文、英文、數字、基本標點）
-        text = re.sub(r'[^\u4e00-\u9fff\w\s.,!?;:()（）「」『』""''。，！？；：]', '', text)
-        
-        return text.strip()
-    
-    def extract_keywords(self, text: str, top_k: int = 10) -> List[str]:
-        """提取關鍵詞"""
-        # 使用 jieba 進行中文分詞
-        words = jieba.cut(text)
-        
-        # 過濾停用詞和短詞
-        stop_words = {'的', '了', '在', '是', '我', '有', '和', '就', '不', '人', '都', '一', '一個', '上', '也', '很', '到', '說', '要', '去', '你', '會', '著', '沒有', '看', '好', '自己', '這'}
-        
-        filtered_words = [word for word in words if len(word) > 1 and word not in stop_words]
-        
-        # 統計詞頻
-        word_freq = {}
-        for word in filtered_words:
-            word_freq[word] = word_freq.get(word, 0) + 1
-        
-        # 返回前 k 個高頻詞
-        keywords = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)[:top_k]
-        return [word for word, freq in keywords]
 
-# 測試用的主程式
-if __name__ == "__main__":
-    processor = DocumentProcessor()
-    
-    # 測試載入目錄
-    docs_dir = r"C:\llm_service\rag_system\documents"
-    documents = processor.load_directory(docs_dir)
-    
-    if documents:
-        # 分割文檔
-        split_docs = processor.split_documents(documents)
-        print(f"載入了 {len(documents)} 個文檔，分割為 {len(split_docs)} 個片段")
+    def _load_pdf(self, file_path: str) -> List[Document]:
+        try: loader = PyPDFLoader(file_path); return loader.load_and_split(self.text_splitter)
+        except Exception as e: logger.error(f"載入 PDF 失敗: {file_path}, {e}"); return []
+
+    def _load_text(self, file_path: str) -> List[Document]:
+        try: loader = TextLoader(file_path, encoding='utf-8'); return loader.load_and_split(self.text_splitter)
+        except Exception as e: logger.error(f"載入 TXT 失敗: {file_path}, {e}"); return []
+
+    def _load_docx(self, file_path: str) -> List[Document]:
+        try: loader = UnstructuredWordDocumentLoader(file_path); return loader.load_and_split(self.text_splitter)
+        except Exception as e: logger.error(f"載入 DOCX 失敗: {file_path}, {e}"); return []
         
-        # 顯示第一個片段的內容
-        if split_docs:
-            print(f"\n第一個片段內容：\n{split_docs[0].page_content[:200]}...")
-            print(f"元數據：{split_docs[0].metadata}")
-    else:
-        print("沒有找到任何文檔")
+    def _load_json(self, file_path: str) -> List[Document]:
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f: data = json.load(f)
+            text_content = self._json_to_text(data)
+            if not text_content: return []
+            docs = self.text_splitter.create_documents([text_content], metadatas=[{"source": str(file_path)}])
+            return docs
+        except Exception as e: logger.error(f"載入 JSON 失敗: {file_path}, {e}"); return []
+
+    def _json_to_text(self, data: any, indent: int = 0) -> str:
+        text_parts = []; prefix = "  " * indent
+        if isinstance(data, dict):
+            for key, value in data.items():
+                if value is None or value == "" or key in ['success']: continue
+                if isinstance(value, (dict, list)): text_parts.append(f"{prefix}{key}:"); text_parts.append(self._json_to_text(value, indent + 1))
+                else: text_parts.append(f"{prefix}{key}: {str(value)}")
+        elif isinstance(data, list):
+            for i, item in enumerate(data):
+                if isinstance(item, (dict, list)): text_parts.append(f"{prefix}- [{i+1}]:"); text_parts.append(self._json_to_text(item, indent + 1))
+                else: text_parts.append(f"{prefix}- {str(item)}")
+        else: return str(data)
+        return "\n".join(text_parts)
+
+    def load_document(self, file_path: str) -> List[Document]:
+        file_path_obj = Path(file_path)
+        extension = file_path_obj.suffix.lower()
+        if extension not in self.supported_extensions:
+            logger.debug(f"跳過不支援的格式: {file_path_obj.name}")
+            return []
+        logger.info(f"正在載入: {file_path_obj.name}")
+        return self.supported_extensions[extension](str(file_path_obj))
+
+    def load_all_documents(self, file_pattern: str = "*") -> List[Document]:
+        all_documents = []
+        logger.info(f"開始掃描目錄: {self.documents_dir}，模式: '{file_pattern}'")
+        
+        for file_path in self.documents_dir.rglob(file_pattern):
+            if file_path.is_file():
+                try:
+                    documents = self.load_document(str(file_path))
+                    all_documents.extend(documents)
+                except Exception as e:
+                    logger.error(f"處理檔案 {file_path.name} 時發生嚴重錯誤: {e}")
+                    continue
+        
+        logger.info(f"目錄掃描完成，共載入 {len(all_documents)} 個文檔片段。")
+        return all_documents

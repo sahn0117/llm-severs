@@ -1,0 +1,40 @@
+{
+  "success": true,
+  "data": [
+    {
+      "city_alias": "台北",
+      "station_name_queried": "臺北",
+      "error": "在 API 回應中找不到觀測站 '臺北'"
+    },
+    {
+      "city_alias": "新北",
+      "station_name_queried": "板橋",
+      "error": "在 API 回應中找不到觀測站 '板橋'"
+    },
+    {
+      "city_alias": "桃園",
+      "station_name_queried": "桃園",
+      "error": "在 API 回應中找不到觀測站 '桃園'"
+    },
+    {
+      "city_alias": "台中",
+      "station_name_queried": "臺中",
+      "error": "在 API 回應中找不到觀測站 '臺中'"
+    },
+    {
+      "city_alias": "台南",
+      "station_name_queried": "臺南",
+      "error": "在 API 回應中找不到觀測站 '臺南'"
+    },
+    {
+      "city_alias": "高雄",
+      "station_name_queried": "高雄",
+      "error": "在 API 回應中找不到觀測站 '高雄'"
+    },
+    {
+      "city_alias": "基隆",
+      "station_name_queried": "基隆",
+      "error": "在 API 回應中找不到觀測站 '基隆'"
+    }
+  ]
+}

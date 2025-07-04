@@ -1,0 +1,34 @@
+{
+"app": {
+"title": "LLM 智能助手",
+"subtitle": "基于 RAG 的智能对话系统"
+},
+"chat": {
+"input_placeholder": "请输入您的问题...",
+"send_button": "发送",
+"clear_button": "清除对话",
+"new_chat": "新对话",
+"thinking": "正在思考中...",
+"error_message": "抱歉，处理您的请求时发生错误",
+"empty_message": "请输入消息",
+"connection_error": "无法连接到服务器"
+},
+"history": {
+"title": "对话历史",
+"no_conversations": "暂无对话记录",
+"search_placeholder": "搜索对话...",
+"delete_confirm": "确定要删除这个对话吗？",
+"rename_title": "重新命名对话"
+},
+"settings": {
+"title": "设置",
+"language": "语言",
+"theme": "主题",
+"model": "模型选择"
+},
+"status": {
+"online": "在线",
+"offline": "离线",
+"connecting": "连接中"
+}
+}

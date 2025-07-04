@@ -1,0 +1,235 @@
+{
+  "success": true,
+  "data": [
+    {
+      "city": "臺北市",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    },
+    {
+      "city": "新北市",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    },
+    {
+      "city": "桃園市",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    },
+    {
+      "city": "臺中市",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    },
+    {
+      "city": "臺南市",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    },
+    {
+      "city": "高雄市",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    },
+    {
+      "city": "基隆市",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    },
+    {
+      "city": "新竹市",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    },
+    {
+      "city": "嘉義市",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    },
+    {
+      "city": "宜蘭縣",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    },
+    {
+      "city": "花蓮縣",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    },
+    {
+      "city": "臺東縣",
+      "current": {
+        "location": "",
+        "station_name": "基隆",
+        "timestamp": {
+          "DateTime": "2025-07-04T19:20:00+08:00"
+        },
+        "temperature": 30.6,
+        "humidity": 69,
+        "wind_speed": 2.6,
+        "wind_direction": 110,
+        "pressure": 1002.9,
+        "rainfall": -99.0,
+        "peak_gust_speed": -99.0,
+        "description": "N/A"
+      },
+      "forecast": null
+    }
+  ],
+  "source": "中央氣象署",
+  "update_time": "2025-07-04T19:32:05.143699"
+}

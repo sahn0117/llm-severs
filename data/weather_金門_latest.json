@@ -1,0 +1,13 @@
+{
+  "city": "金門",
+  "current_weather": {
+    "success": true,
+    "data": {
+      "station_name": "金門",
+      "city": null,
+      "temperature": 27.0,
+      "humidity": 92,
+      "description": "N/A"
+    }
+  }
+}

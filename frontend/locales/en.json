@@ -1,0 +1,34 @@
+{
+"app": {
+"title": "LLM Assistant",
+"subtitle": "RAG-based Intelligent Conversation System"
+},
+"chat": {
+"input_placeholder": "Please enter your question...",
+"send_button": "Send",
+"clear_button": "Clear Chat",
+"new_chat": "New Chat",
+"thinking": "Thinking...",
+"error_message": "Sorry, an error occurred while processing your request",
+"empty_message": "Please enter a message",
+"connection_error": "Unable to connect to server"
+},
+"history": {
+"title": "Chat History",
+"no_conversations": "No conversation records",
+"search_placeholder": "Search conversations...",
+"delete_confirm": "Are you sure you want to delete this conversation?",
+"rename_title": "Rename Conversation"
+},
+"settings": {
+"title": "Settings",
+"language": "Language",
+"theme": "Theme",
+"model": "Model Selection"
+},
+"status": {
+"online": "Online",
+"offline": "Offline",
+"connecting": "Connecting"
+}
+}
