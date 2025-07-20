@@ -2,39 +2,69 @@
   "success": true,
   "data": [
     {
-      "city_alias": "台北",
-      "station_name_queried": "臺北",
-      "error": "在 API 回應中找不到觀測站 '臺北'"
+      "location_name": "新北市",
+      "weather_condition": "陰短暫陣雨或雷雨",
+      "rain_probability": 30,
+      "min_temperature": 31,
+      "max_temperature": 35,
+      "comfort_index": "悶熱至易中暑"
     },
     {
-      "city_alias": "新北",
-      "station_name_queried": "板橋",
-      "error": "在 API 回應中找不到觀測站 '板橋'"
+      "location_name": "臺北市",
+      "weather_condition": "陰短暫陣雨或雷雨",
+      "rain_probability": 30,
+      "min_temperature": 30,
+      "max_temperature": 34,
+      "comfort_index": "悶熱至易中暑"
     },
     {
-      "city_alias": "桃園",
-      "station_name_queried": "桃園",
-      "error": "在 API 回應中找不到觀測站 '桃園'"
+      "location_name": "臺南市",
+      "weather_condition": "陰短暫陣雨或雷雨",
+      "rain_probability": 60,
+      "min_temperature": 30,
+      "max_temperature": 32,
+      "comfort_index": "悶熱至易中暑"
     },
     {
-      "city_alias": "台中",
-      "station_name_queried": "臺中",
-      "error": "在 API 回應中找不到觀測站 '臺中'"
+      "location_name": "臺中市",
+      "weather_condition": "陰短暫陣雨或雷雨",
+      "rain_probability": 60,
+      "min_temperature": 31,
+      "max_temperature": 35,
+      "comfort_index": "易中暑"
     },
     {
-      "city_alias": "台南",
-      "station_name_queried": "臺南",
-      "error": "在 API 回應中找不到觀測站 '臺南'"
+      "location_name": "桃園市",
+      "weather_condition": "多雲時陰短暫陣雨或雷雨",
+      "rain_probability": 40,
+      "min_temperature": 31,
+      "max_temperature": 35,
+      "comfort_index": "悶熱至易中暑"
     },
     {
-      "city_alias": "高雄",
-      "station_name_queried": "高雄",
-      "error": "在 API 回應中找不到觀測站 '高雄'"
+      "location_name": "高雄市",
+      "weather_condition": "陰短暫陣雨或雷雨",
+      "rain_probability": 70,
+      "min_temperature": 30,
+      "max_temperature": 33,
+      "comfort_index": "悶熱至易中暑"
     },
     {
-      "city_alias": "基隆",
-      "station_name_queried": "基隆",
-      "error": "在 API 回應中找不到觀測站 '基隆'"
+      "location_name": "屏東縣",
+      "weather_condition": "陰短暫陣雨或雷雨",
+      "rain_probability": 60,
+      "min_temperature": 29,
+      "max_temperature": 32,
+      "comfort_index": "悶熱至易中暑",
+      "note": "这是整个屏东县的预报，适用于内埔乡"
+    },
+    {
+      "location_name": "基隆市",
+      "weather_condition": "陰短暫陣雨或雷雨",
+      "rain_probability": 40,
+      "min_temperature": 29,
+      "max_temperature": 32,
+      "comfort_index": "悶熱"
     }
   ]
 }

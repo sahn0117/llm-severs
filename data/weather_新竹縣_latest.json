@@ -1,7 +1,0 @@
-{
-  "city": "新竹縣",
-  "current_weather": {
-    "success": false,
-    "error": "找不到縣市名為 '新竹縣' 的任何觀測站"
-  }
-}

@@ -1,7 +1,0 @@
-{
-  "city": "南投",
-  "current_weather": {
-    "success": false,
-    "error": "找不到縣市名為 '南投' 的任何觀測站"
-  }
-}
