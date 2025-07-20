@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能助手 - LLM 服務平台</title>
+    <!-- 修正路徑 -->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 側邊欄 -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-robot"></i> 智能助手</h2>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- 功能選單 -->
+                <div class="feature-menu">
+                    <h3>功能選單</h3>
+                    <div class="feature-item active" data-feature="chat">
+                        <i class="fas fa-comments"></i>
+                        <span>文字對話</span>
+                    </div>
+                    <div class="feature-item" data-feature="voice">
+                        <i class="fas fa-microphone"></i>
+                        <span>語音對話</span>
+                    </div>
+                    <div class="feature-item" data-feature="ocr">
+                        <i class="fas fa-image"></i>
+                        <span>圖片識別</span>
+                    </div>
+                    <div class="feature-item" data-feature="weather">
+                        <i class="fas fa-cloud-sun"></i>
+                        <span>天氣查詢</span>
+                    </div>
+                    <div class="feature-item" data-feature="documents">
+                        <i class="fas fa-file-alt"></i>
+                        <span>文檔管理</span>
+                    </div>
+                </div>
+                
+                <!-- 對話歷史 -->
+                <div class="conversation-history">
+                    <h3>對話歷史</h3>
+                    <div class="history-list" id="historyList">
+                        <!-- 歷史對話項目將動態載入 -->
+                    </div>
+                    <button class="clear-history-btn" id="clearHistoryBtn">
+                        <i class="fas fa-trash"></i> 清除歷史
+                    </button>
+                </div>
+                
+                <!-- 設定選項 -->
+                <div class="settings">
+                    <h3>設定</h3>
+                    <div class="setting-item">
+                        <label for="languageSelect">語言：</label>
+                        <select id="languageSelect">
+                            <option value="zh-TW">繁體中文</option>
+                            <option value="zh-CN">簡體中文</option>
+                            <option value="en">English</option>
+                            <option value="ja">日本語</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="ragToggle">啟用 RAG：</label>
+                        <input type="checkbox" id="ragToggle" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label for="weatherToggle">自動天氣：</label>
+                        <input type="checkbox" id="weatherToggle" checked>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 主要內容區域 -->
+        <div class="main-content">
+            <!-- 頂部工具列 -->
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="pageTitle">文字對話</h1>
+                </div>
+                <div class="toolbar-right">
+                    <div class="status-indicator" id="statusIndicator">
+                        <i class="fas fa-circle"></i>
+                        <span>連線中...</span>
+                    </div>
+                    <button class="settings-btn" id="settingsBtn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 聊天介面 -->
+            <div class="chat-container feature-container" id="chatContainer">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <div class="welcome-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h2>歡迎使用智能助手</h2>
+                        <p>我可以幫助您進行文字對話、語音識別、圖片文字提取，以及提供即時天氣資訊。請選擇您需要的功能開始使用。</p>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="messageInput" 
+                            placeholder="輸入您的訊息..." 
+                            rows="1"
+                            maxlength="2000"></textarea>
+                        <div class="input-actions">
+                            <button class="action-btn" id="voiceBtn" title="語音輸入">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button class="action-btn" id="imageBtn" title="上傳圖片">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button class="action-btn" id="attachBtn" title="上傳文檔">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <button class="send-btn" id="sendBtn" title="發送">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-info">
+                        <span class="char-count" id="charCount">0/2000</span>
+                        <span class="typing-indicator" id="typingIndicator" style="display: none;">
+                            <i class="fas fa-circle"></i>
+                            <i class="fas fa-circle"></i>
+                            <i class="fas fa-circle"></i>
+                            AI 正在思考...
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 語音對話介面 -->
+            <div class="voice-container feature-container" id="voiceContainer" style="display: none;">
+                <!-- 未來語音功能 -->
+                <div class="placeholder-text">語音功能開發中...</div>
+            </div>
+            
+            <!-- OCR 介面 -->
+            <div class="ocr-container feature-container" id="ocrContainer" style="display: none;">
+                <!-- 未來OCR功能 -->
+                 <div class="placeholder-text">OCR功能開發中...</div>
+            </div>
+            
+            <!-- 天氣介面 -->
+            <div class="weather-container feature-container" id="weatherContainer" style="display: none;">
+                <!-- 未來天氣功能 -->
+                 <div class="placeholder-text">天氣功能開發中...</div>
+            </div>
+            
+            <!-- 文檔管理介面 -->
+            <div class="documents-container feature-container" id="documentsContainer" style="display: none;">
+                <!-- 未來文檔管理功能 -->
+                 <div class="placeholder-text">文檔管理功能開發中...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 載入指示器 -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>處理中...</p>
+        </div>
+    </div>
+    
+    <!-- 通知系統 -->
+    <div class="notification-container" id="notificationContainer"></div>
+    
+    <!-- JavaScript (修正路徑) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../static/js/app.js"></script>
+    <script src="../static/js/chat.js"></script>
+    <script src="../static/js/voice.js"></script>
+    <script src="../static/js/ocr.js"></script>
+    <script src="../static/js/weather.js"></script>
+    <script src="../static/js/documents.js"></script>
+    <script src="../static/js/utils.js"></script> <!-- 即使是空的也要引用 -->
+</body>
+</html>
