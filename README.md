@@ -17,7 +17,7 @@
 ---
 
 ## 前置條件
-- Python 3.10.X
+- Python 3.9.X
 - CUDA 
 - ffmpeg
 - Tesseract OCR
