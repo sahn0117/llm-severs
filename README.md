@@ -68,7 +68,9 @@ python Main.py
 cd ..\llm_service\frontend
 pythontest_server.py
 ```
+   
    前端服務預設於 [http://localhost:8080](http://localhost:8080) 運行
+  並點選到templates資料夾，請確保main.py在後台持續運作
    *如果版面不對請查閱是否加載style.css
 
 ## 📄 檔案說明
