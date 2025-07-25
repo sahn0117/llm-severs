@@ -36,61 +36,42 @@ pip install -r requirements.txt
 -.env
 CWA_API_KEY=your_cwa_api_key_here
 
-## 使用方法
-步驟 1：建立靜態知識庫
+# 專案運行說明
+
+本文件說明如何快速啟動及運行本專案，請**務必按照步驟順序執行**。
+
+## 步驟 1：建立靜態知識庫
+
 這是運行專案前的必要準備工作。
 
-放置知識文件
-將您希望納入知識庫的所有文件（如 .pdf、.txt、.docx 等），放置於 rag_system/documents/ 資料夾中。
+1. **放置知識文件**  
+   將您希望納入知識庫的所有文件（如 `.pdf`、`.txt`、`.docx` 等），放置於 `rag_system/documents/` 資料夾中。
 
-執行建立腳本
-在終端機運行以下命令：
-
-bash
+2. **執行靜態資料庫建立腳本**  
+   在終端機運行以下命令：
+```bash
 python rag_system/scripts/build_static_db.py
-此命令會將上述文件轉換為向量資料庫。每當知識文件有變動時，需重新執行本步驟。
+```
+> 此命令會將上述文件轉換為向量資料庫。每當知識文件有變動時，需重新執行本步驟。
 
-步驟 2：獲取天氣並建立動態知識庫（首次運行）
-獲取最新天氣
-天氣資訊會寫入 data/weather_for_llm.txt，執行下列命令：
-
-bash
-python backend/weather_scheduler.py update
-建立動態知識庫
-將天氣資料轉換為動態知識庫：
-
-bash
-python rag_system/scripts/build_rag_db.py
-**提示：**在生產環境下，建議讓 weather_scheduler.py 在背景持續運行，並定期調用 build_rag_db.py 來維護最新動態知識。
-
-步驟 3：啟動後端 Flask 服務
-在終端機執行：
-
-bash
-python backend/app.py
-預設服務將運行於 http://localhost:8081。
-
-步驟 4：啟動前端介面
-切換目錄
-
-bash
-cd frontend
-啟動簡易伺服器
-
-bash
+## 步驟 2：執行python -m http.server 8080
+ ```bash
 python -m http.server 8080
-前端服務預設於 http://localhost:8080 運行。
+```
 
-訪問應用
+## 步驟 3：執行Main.py
+```bash
+python Main.py
+```
+## 步驟 4:到網頁開啟服務
+   前端服務預設於 [http://localhost:8080](http://localhost:8080) 運行
 
-打開瀏覽器前往 http://localhost:8080
+## 📄 檔案說明
 
-開始使用您的應用！
+如需了解各檔案的詳細功能、用途或可自訂的設定，請參閱專案根目錄下的 [`FileDescription.md`](FileDescription.md) 文件。
 
-📄 檔案說明
-如需了解各檔案的詳細功能、用途或可自訂的設定，請參閱專案根目錄下的 FileDescription.md 文件。
 
-注意事項
-上述指令如需運用於生產環境或自動化，可整合至 shell 腳本或 CI/CD 流程中。
 
-部分指令涉及程式碼執行，請務必確認內容安全且來源可信。
+
+
+
