@@ -64,6 +64,10 @@ python -m http.server 8080
 python Main.py
 ```
 ## 步驟 4:到網頁開啟服務
+```bash
+cd ../llm_service\frontend
+pythontest_server.py
+```
    前端服務預設於 [http://localhost:8080](http://localhost:8080) 運行
    *如果版面不對請查閱是否加載style.css
 
