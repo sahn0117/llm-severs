@@ -1,33 +1,61 @@
+# ==============================================================================
+# IMPORTANT: PyTorch Installation
+# ==============================================================================
+# DO NOT install PyTorch from this file directly using 'pip install torch'.
+# It may install a version without GPU (CUDA) support.
+#
+# INSTRUCTIONS:
+# 1. Go to the official PyTorch website: https://pytorch.org/get-started/locally/
+# 2. Select your system specifications (OS, Package, Compute Platform).
+# 3. Copy the generated command and run it in your terminal FIRST.
+#
+# Example command for Windows/Linux with CUDA 12.1:
+# pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+# ==============================================================================
+
+
+# --- Web Framework ---
 flask==3.0.0
 flask-cors==4.0.0
 flask-sqlalchemy==3.1.1
+
+# --- LangChain Core & Integrations ---
 langchain==0.2.11
 langchain-community==0.2.11
-chromadb==0.5.4
 langchain-chroma==0.2.6
 langchain_huggingface==0.3.0
+chromadb==0.5.4
+
+# --- Hugging Face & Sentence Transformers ---
+# 'huggingface-hub' and 'tokenizers' will be installed automatically as dependencies.
 transformers==4.42.4
 sentence-transformers==2.7.0
-tf-keras
-numpy==1.26.4
+
+# --- ML & Data Processing ---
+# tensorflow includes tf-keras. Let these packages determine the best numpy version.
+tensorflow
 scipy==1.13.1
+numpy==1.26.4
+
+# --- Document Loaders ---
+pypdf==4.2.0  # Modern replacement for PyPDF2
 python-docx==1.1.0
-PyPDF2==3.0.1
 openpyxl==3.1.2
 python-pptx==0.6.23
+
+# --- Speech, Audio & Image Processing ---
 openai-whisper==20231117
-Pillow==10.3.0
-pytesseract==0.3.10
 librosa==0.10.1
 soundfile==0.12.1
-pydub
-requests==2.31.0
+pydub==0.25.1
+SpeechRecognition==3.10.4
+Pillow==10.3.0
+pytesseract==0.3.10
+
+# --- OpenAI API & Utilities ---
+openai>=1.16.0,<2.0.0
+requests==2.32.3
 jieba==0.42.1
-openai==1.6.1
-tqdm
-SpeechRecognition
-schedule
-livereload
-torch
-torchvision
-torchaudio
+tqdm==4.66.4
+schedule==1.2.2
+livereload==2.6.3
