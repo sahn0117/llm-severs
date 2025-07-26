@@ -25,6 +25,7 @@
 - CWA API Key
 - Visual Studio 的 C++ Desktop Development Tools
 - Java
+- Pytorch (建議去官方下載適配cuda版本)
 
 ## 安裝依賴
 
