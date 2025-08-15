@@ -74,9 +74,7 @@ pythontest_server.py
   並點選到templates資料夾，請確保main.py在後台持續運作
    *如果版面不對請查閱是否加載style.css
 
-## 📄 檔案說明
 
-如需了解各檔案的詳細功能、用途或可自訂的設定，請參閱專案根目錄下的 [`FileDescription.md`](FileDescription.md) 文件。
 
 
 
