@@ -55,9 +55,9 @@ python rag_system/scripts/build_static_db.py
 ```
 > 此命令會將上述文件轉換為向量資料庫。每當知識文件有變動時，需重新執行本步驟。
 
-## 步驟 2：執行python -m http.server 8080
+## 步驟 2：執行python -m http.server port
  ```bash
-python -m http.server 8080
+python -m http.server port
 ```
 
 ## 步驟 3：執行Main.py
